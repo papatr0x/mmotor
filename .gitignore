@@ -1,0 +1,84 @@
+# CMake build directories
+cmake-build-*/
+build/
+out/
+
+# CMake cache and generated files
+CMakeCache.txt
+CMakeFiles/
+cmake_install.cmake
+install_manifest.txt
+CTestTestfile.cmake
+_deps/
+
+# Compiled binaries and libraries
+*.exe
+*.out
+*.app
+*.so
+*.dylib
+*.dll
+*.a
+*.lib
+
+# IDE - CLion / JetBrains
+.idea/
+*.iml
+*.iws
+.cmake/
+
+# IDE - Visual Studio
+.vs/
+*.vcxproj
+*.vcxproj.filters
+*.vcxproj.user
+*.sln
+
+# IDE - Xcode
+*.xcodeproj
+*.xcworkspace
+!*.xcodeproj/project.pbxproj
+!*.xcworkspace/contents.xcworkspacedata
+*.pbxuser
+*.mode1v3
+*.mode2v3
+*.perspectivev3
+xcuserdata/
+DerivedData/
+
+# macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+
+# Linux
+*~
+.directory
+
+# Windows
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+
+# Android
+*.apk
+*.ap_
+*.dex
+local.properties
+.gradle/
+.cxx/
+.externalNativeBuild/
+
+# Compilation artifacts
+*.o
+*.obj
+*.d
+*.suo
+*.user
+*.userosscache
+*.sln.docstates
+*.log
+
+# Package managers
+conan.lock
+vcpkg_installed/
