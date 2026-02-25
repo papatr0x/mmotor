@@ -48,14 +48,13 @@ FetchContent_MakeAvailable(bgfx SDL3 JoltPhysics SoLoud glm json stb)
 
 
 # Engine library
-file(GLOB_RECURSE ENGINE_SOURCES "engine/src/**/*.cpp")
+file(GLOB_RECURSE ENGINE_SOURCES "engine/src/*.cpp")
 add_library(motorcito STATIC ${ENGINE_SOURCES})
 target_include_directories(motorcito PUBLIC engine/src)
 target_link_libraries(motorcito PUBLIC
         SDL3::SDL3
         bgfx
-        JoltPhysics
-        SoLoud
+        Jolt
         glm::glm
 )
 
