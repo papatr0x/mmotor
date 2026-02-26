@@ -78,6 +78,7 @@ target_link_libraries(MMotorEngine PUBLIC
         bgfx
         Jolt
         miniaudio
+        glm::glm
 )
 
 if(APPLE AND NOT IOS)
