@@ -7,13 +7,12 @@
 
 #pragma once
 #include "GameLoop.h"
-// #include "../renderer/Renderer.hpp"
+#include "renderer/Renderer.h"
 // #include "../physics/PhysicsWorld.hpp"
 // #include "../audio/AudioSystem.hpp"
 #include "input/InputSystem.h"
 // #include "../scene/SceneManager.hpp"
 
-using GameUpdateFn = std::function<void(float dt)>;
 
 class Engine {
 public:
@@ -22,24 +21,27 @@ public:
         return s_instance;
     }
 
+    using GameUpdateFn = std::function<void(float dt)>;
+
     bool init(const std::string& title, int width, int height);
     void run(const GameUpdateFn& gameUpdate = nullptr);
     void shutdown();
 
-    // Renderer&      renderer()     { return *m_renderer; }
+    Renderer&      renderer()     { return *m_renderer; }
     // PhysicsWorld&  physics()      { return *m_physics; }
     // AudioSystem&   audio()        { return *m_audio; }
     InputSystem&   input()        { return *m_input; }
     // SceneManager&  sceneManager() { return *m_sceneManager; }
     GameLoop&      loop()     { return m_loop; }
 
+    Engine(const Engine&)            = delete;
+    Engine& operator=(const Engine&) = delete;
+
 private:
     Engine() = default;
     ~Engine() = default;
-    Engine(const Engine&) = delete;
-    Engine& operator=(const Engine&) = delete;
 
-    // std::unique_ptr<Renderer>     m_renderer;
+    std::unique_ptr<Renderer>     m_renderer;
     // std::unique_ptr<PhysicsWorld> m_physics;
     // std::unique_ptr<AudioSystem>  m_audio;
     std::unique_ptr<InputSystem>  m_input;

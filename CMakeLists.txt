@@ -2,6 +2,8 @@ cmake_minimum_required(VERSION 4.0)
 
 project(MMotor VERSION 0.1 LANGUAGES CXX)
 
+enable_language(OBJCXX)
+
 include(FetchContent)
 
 set(CMAKE_CXX_STANDARD 23)
@@ -61,7 +63,10 @@ FetchContent_Declare(
 FetchContent_MakeAvailable(bgfx SDL3 JoltPhysics json miniaudio glm stb)
 
 # Engine library
-file(GLOB_RECURSE ENGINE_SOURCES "engine/*.cpp")
+file(GLOB_RECURSE ENGINE_SOURCES
+        "engine/*.cpp"
+        "engine/*.mm"
+)
 add_library(MMotorEngine STATIC ${ENGINE_SOURCES})
 target_include_directories(MMotorEngine PUBLIC engine)
 target_link_libraries(MMotorEngine PUBLIC
@@ -70,6 +75,14 @@ target_link_libraries(MMotorEngine PUBLIC
         Jolt
         miniaudio
 )
+
+if(APPLE AND NOT IOS)
+    target_link_libraries(MMotorEngine PUBLIC
+            "-framework Cocoa"
+            "-framework Metal"
+            "-framework QuartzCore"
+    )
+endif()
 
 ### GAME SECTION
 

@@ -2,6 +2,7 @@
 // Created by Patricio Palma on 26-02-26.
 //
 #include "Engine.h"
+#include "platform/NativeWindow.h"
 #include <SDL3/SDL.h>
 #include <iostream>
 
@@ -11,14 +12,33 @@ bool Engine::init(const std::string& title, int width, int height) {
         return false;
     }
 
-    // make a window
-    m_window = SDL_CreateWindow(title.c_str(), width, height, SDL_WINDOW_RESIZABLE);
+    // Make a window
+    m_window = SDL_CreateWindow(title.c_str(), width, height,
+        SDL_WINDOW_RESIZABLE | SDL_WINDOW_METAL);
     if (!m_window) {
         std::cerr << "SDL_CreateWindow failed: " << SDL_GetError() << "\n";
         return false;
     }
 
+    auto handles = getNativeHandles(m_window);
+    if (!handles.windowHandle) {
+        std::cerr << "Failed to get native window handle\n";
+        return false;
+    }
+
     m_input = std::make_unique<InputSystem>();
+    m_renderer = std::make_unique<Renderer>();
+
+    if (!m_renderer->init(handles.windowHandle, handles.displayHandle, width, height)) {
+        return false;
+    }
+
+    // Show window and raise it to front
+    SDL_ShowWindow(m_window);
+    SDL_RaiseWindow(m_window);
+
+    // Pump events. Cocoa proceses the window before game loop
+    SDL_PumpEvents();
 
     m_initialized = true;
     std::cout << "Engine initialized: " << title
@@ -41,8 +61,10 @@ void Engine::run(const GameUpdateFn& gameUpdate) {
                 gameUpdate(dt);
 }
         },
-        [](float alpha) {
-            // Render — still empty... maybe some day
+        [this](float alpha) {
+            m_renderer->beginFrame();
+            // render a game screen
+            m_renderer->endFrame();
         }
     );
 }

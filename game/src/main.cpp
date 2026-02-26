@@ -3,7 +3,7 @@
 int main() {
     auto& engine = Engine::instance();
 
-    if (!engine.init("MMotor", 1280, 720)) {
+    if (!engine.init("MiniMotor Engine Game", 1280, 720)) {
         return -1;
     }
 
