@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 4.0)
 
-project(motorcito VERSION 0.1 LANGUAGES CXX)
+project(MMotor VERSION 0.1 LANGUAGES CXX)
 
 include(FetchContent)
 
@@ -8,16 +8,28 @@ set(CMAKE_CXX_STANDARD 23)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 ### ENGINE SECTION
+
+set(BGFX_BUILD_EXAMPLES OFF CACHE BOOL "" FORCE)
+set(BGFX_BUILD_TESTS OFF CACHE BOOL "" FORCE)
 FetchContent_Declare(
         bgfx
         GIT_REPOSITORY "https://github.com/bkaradzic/bgfx.cmake.git"
         GIT_TAG        "v1.139.9155-513"
 )
+
+set(SDL_TESTS OFF CACHE BOOL "" FORCE)
+set(SDL_EXAMPLES OFF CACHE BOOL "" FORCE)
 FetchContent_Declare(
         SDL3
         GIT_REPOSITORY "https://github.com/libsdl-org/SDL.git"
         GIT_TAG        "release-3.4.2"
 )
+
+set(TARGET_UNIT_TESTS OFF CACHE BOOL "" FORCE)
+set(TARGET_HELLO_WORLD OFF CACHE BOOL "" FORCE)
+set(TARGET_PERFORMANCE_TEST OFF CACHE BOOL "" FORCE)
+set(TARGET_SAMPLES OFF CACHE BOOL "" FORCE)
+set(TARGET_VIEWER OFF CACHE BOOL "" FORCE)
 FetchContent_Declare(
         JoltPhysics
         GIT_REPOSITORY "https://github.com/jrouwe/JoltPhysics.git"
@@ -25,15 +37,17 @@ FetchContent_Declare(
         SOURCE_SUBDIR  "Build"
 )
 FetchContent_Declare(
-        SoLoud
-        GIT_REPOSITORY "https://github.com/jarikomppa/soloud.git"
-        GIT_TAG        "RELEASE_20200207"
+        miniaudio
+        GIT_REPOSITORY "https://github.com/mackron/miniaudio.git"
+        GIT_TAG        "0.11.24"
 )
+set(GLM_BUILD_TESTS OFF CACHE BOOL "" FORCE)
 FetchContent_Declare(
         glm
         GIT_REPOSITORY "https://github.com/g-truc/glm.git"
         GIT_TAG        "1.0.3"
 )
+set(JSON_BuildTests OFF CACHE BOOL "" FORCE)
 FetchContent_Declare(
         json
         GIT_REPOSITORY "https://github.com/nlohmann/json.git"
@@ -44,31 +58,28 @@ FetchContent_Declare(
         GIT_REPOSITORY "https://github.com/nothings/stb.git"
         GIT_TAG        "master"
 )
-FetchContent_MakeAvailable(bgfx SDL3 JoltPhysics SoLoud glm json stb)
-
+FetchContent_MakeAvailable(bgfx SDL3 JoltPhysics json miniaudio glm stb)
 
 # Engine library
-file(GLOB_RECURSE ENGINE_SOURCES "engine/src/*.cpp")
-add_library(motorcito STATIC ${ENGINE_SOURCES})
-target_include_directories(motorcito PUBLIC engine/src)
-target_link_libraries(motorcito PUBLIC
+file(GLOB_RECURSE ENGINE_SOURCES "engine/*.cpp")
+add_library(MMotorEngine STATIC ${ENGINE_SOURCES})
+target_include_directories(MMotorEngine PUBLIC engine)
+target_link_libraries(MMotorEngine PUBLIC
         SDL3::SDL3
         bgfx
         Jolt
-        glm::glm
+        miniaudio
 )
 
 ### GAME SECTION
 
 file(GLOB_RECURSE GAME_SOURCES "game/src/*.cpp")
+add_executable(MMotorGame ${GAME_SOURCES})
+target_link_libraries(MMotorGame PRIVATE MMotorEngine)
 
-add_executable(game ${GAME_SOURCES})
-target_link_libraries(game PRIVATE motorcito)
-
-# Platform specifics
 if(APPLE)
     if(IOS)
-        set_target_properties(game PROPERTIES
+        set_target_properties(MMotorGame PROPERTIES
                 MACOSX_BUNDLE TRUE
                 XCODE_ATTRIBUTE_TARGETED_DEVICE_FAMILY "1,2"
         )
@@ -76,5 +87,5 @@ if(APPLE)
 endif()
 
 if(ANDROID)
-    add_library(game SHARED game/main.cpp) # Android necesita .so
+    add_library(MMotorGame SHARED game/main.cpp) # Android necesita .so
 endif()
