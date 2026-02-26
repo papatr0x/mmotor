@@ -76,16 +76,3 @@ target_link_libraries(MMotorEngine PUBLIC
 file(GLOB_RECURSE GAME_SOURCES "game/src/*.cpp")
 add_executable(MMotorGame ${GAME_SOURCES})
 target_link_libraries(MMotorGame PRIVATE MMotorEngine)
-
-if(APPLE)
-    if(IOS)
-        set_target_properties(MMotorGame PROPERTIES
-                MACOSX_BUNDLE TRUE
-                XCODE_ATTRIBUTE_TARGETED_DEVICE_FAMILY "1,2"
-        )
-    endif()
-endif()
-
-if(ANDROID)
-    add_library(MMotorGame SHARED game/main.cpp) # Android necesita .so
-endif()
