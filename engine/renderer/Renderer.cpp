@@ -3,6 +3,8 @@
 //
 
 #include "Renderer.h"
+#include <bgfx/bgfx.h>
+#include <bgfx/platform.h>
 #include <iostream>
 
 bool Renderer::init(void* nativeWindowHandle, void* nativeDisplayHandle, int width, int height) {
@@ -12,7 +14,6 @@ bool Renderer::init(void* nativeWindowHandle, void* nativeDisplayHandle, int wid
     // Pass native window handle to bgfx
     bgfx::PlatformData pd{};
     pd.nwh  = nativeWindowHandle;
-    // pd.ndt  = nativeDisplayHandle; // required for linux?
 
     // Init bgfx — choose Metal on macOS, DX12/Vulkan on Windows
     bgfx::Init init;
@@ -23,7 +24,8 @@ bool Renderer::init(void* nativeWindowHandle, void* nativeDisplayHandle, int wid
     init.platformData      = pd;
 
     // For apple you MUST call this to avoid a deadlock calling bgfx::init()
-    bgfx::renderFrame();
+    // this enable single threaded mode
+    // bgfx::renderFrame();
 
     if (!bgfx::init(init)) {
         std::cerr << "bgfx::init failed\n";
@@ -43,7 +45,7 @@ bool Renderer::init(void* nativeWindowHandle, void* nativeDisplayHandle, int wid
 }
 
 void Renderer::beginFrame() {
-    bgfx::renderFrame(); // Required in single-thread mode
+    // bgfx::renderFrame(); // Required in single-thread mode
     bgfx::setViewRect(0, 0, 0,
         static_cast<uint16_t>(m_width),
         static_cast<uint16_t>(m_height));
@@ -69,4 +71,12 @@ void Renderer::shutdown() {
         m_initialized = false;
         std::cout << "Renderer shutdown\n";
     }
+}
+
+void Renderer::submit(const Mesh& mesh, const ShaderProgram& shader) {
+    if (!mesh.isValid() || !shader.isValid()) return;
+    bgfx::setVertexBuffer(0, mesh.vbh());
+    bgfx::setIndexBuffer(mesh.ibh());
+    bgfx::setState(BGFX_STATE_DEFAULT);
+    bgfx::submit(0, shader.handle());
 }

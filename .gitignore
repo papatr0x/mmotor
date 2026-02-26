@@ -78,6 +78,7 @@ local.properties
 *.userosscache
 *.sln.docstates
 *.log
+*.bin
 
 # Package managers
 conan.lock
