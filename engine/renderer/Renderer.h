@@ -9,6 +9,8 @@
 
 #include "ShaderProgram.h"
 #include "Mesh.h"
+#include "ecs/Components.h"
+
 
 class Renderer {
 public:
@@ -18,7 +20,7 @@ public:
     void shutdown();
     void onResize(int width, int height);
 
-    void submit(const Mesh& mesh, const ShaderProgram& shader);
+    void submit(const Mesh& mesh, const ShaderProgram& shader, const Transform& transform);
 
     int width()  const { return m_width; }
     int height() const { return m_height; }

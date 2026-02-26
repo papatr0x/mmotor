@@ -28,6 +28,11 @@ bool Engine::init(const std::string& title, int width, int height) {
 
     m_input = std::make_unique<InputSystem>();
     m_renderer = std::make_unique<Renderer>();
+    m_physics = std::make_unique<PhysicsWorld>();
+
+    if (!m_physics->init()) {
+        return false;
+    }
 
     if (!m_renderer->init(handles.windowHandle, handles.displayHandle, width, height)) {
         return false;
@@ -70,10 +75,17 @@ void Engine::run(const GameUpdateFn& gameUpdate) {
 }
 
 void Engine::shutdown() {
+    if (m_physics) {
+        m_physics->shutdown();
+    }
+    if (m_renderer) {
+        m_renderer->shutdown();
+    }
     if (m_window) {
         SDL_DestroyWindow(m_window);
         m_window = nullptr;
     }
+
     SDL_Quit();
     m_initialized = false;
     std::cout << "Engine shutdown\n";

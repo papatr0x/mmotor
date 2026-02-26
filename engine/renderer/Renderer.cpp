@@ -5,6 +5,9 @@
 #include "Renderer.h"
 #include <bgfx/bgfx.h>
 #include <bgfx/platform.h>
+#include <glm/gtc/matrix_transform.hpp>
+#include <glm/gtc/type_ptr.hpp>
+#include <bx/math.h>
 #include <iostream>
 
 bool Renderer::init(void* nativeWindowHandle, void* nativeDisplayHandle, int width, int height) {
@@ -73,8 +76,38 @@ void Renderer::shutdown() {
     }
 }
 
-void Renderer::submit(const Mesh& mesh, const ShaderProgram& shader) {
+void Renderer::submit(const Mesh& mesh, const ShaderProgram& shader, const Transform& transform){
     if (!mesh.isValid() || !shader.isValid()) return;
+
+    // View matrix — cámara mirando desde z=5 hacia el origen
+    float view[16];
+    bx::mtxLookAt(view,
+        bx::Vec3{0.0f, 2.0f, 5.0f},  // eye
+        bx::Vec3{0.0f, 0.0f, 0.0f},  // at
+        bx::Vec3{0.0f, 1.0f, 0.0f}   // up
+    );
+
+    // Projection matrix
+    float proj[16];
+    bx::mtxProj(proj,
+        60.0f,                                    // fov
+        float(m_width) / float(m_height),         // aspect
+        0.1f, 100.0f,                        // near, far
+        bgfx::getCaps()->homogeneousDepth
+    );
+
+    bgfx::setViewTransform(0, view, proj);
+
+    // Matriz model desde el Transform
+    float model[16];
+    glm::mat4 t = glm::translate(glm::mat4(1.0f), transform.position);
+    glm::mat4 r = glm::mat4_cast(transform.rotation);
+    glm::mat4 s = glm::scale(glm::mat4(1.0f), transform.scale);
+    glm::mat4 m = t * r * s;
+
+    memcpy(model, glm::value_ptr(m), sizeof(float) * 16);
+    bgfx::setTransform(model);
+
     bgfx::setVertexBuffer(0, mesh.vbh());
     bgfx::setIndexBuffer(mesh.ibh());
     bgfx::setState(BGFX_STATE_DEFAULT);

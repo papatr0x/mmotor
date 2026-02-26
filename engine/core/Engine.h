@@ -8,10 +8,10 @@
 #pragma once
 #include "GameLoop.h"
 #include "renderer/Renderer.h"
-// #include "../physics/PhysicsWorld.hpp"
-// #include "../audio/AudioSystem.hpp"
+#include "physics/PhysicsWorld.h"
 #include "input/InputSystem.h"
-// #include "../scene/SceneManager.hpp"
+// #include "../scene/SceneManager.h"
+// #include "../audio/AudioSystem.h"
 
 
 class Engine {
@@ -28,7 +28,7 @@ public:
     void shutdown();
 
     Renderer&      renderer()     { return *m_renderer; }
-    // PhysicsWorld&  physics()      { return *m_physics; }
+    PhysicsWorld&  physics()      { return *m_physics; }
     // AudioSystem&   audio()        { return *m_audio; }
     InputSystem&   input()        { return *m_input; }
     // SceneManager&  sceneManager() { return *m_sceneManager; }
@@ -42,7 +42,7 @@ private:
     ~Engine() = default;
 
     std::unique_ptr<Renderer>     m_renderer;
-    // std::unique_ptr<PhysicsWorld> m_physics;
+    std::unique_ptr<PhysicsWorld> m_physics;
     // std::unique_ptr<AudioSystem>  m_audio;
     std::unique_ptr<InputSystem>  m_input;
     // std::unique_ptr<SceneManager> m_sceneManager;

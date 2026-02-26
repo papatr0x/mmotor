@@ -2,8 +2,6 @@ cmake_minimum_required(VERSION 4.0)
 
 project(MMotor VERSION 0.1 LANGUAGES CXX)
 
-enable_language(OBJCXX)
-
 include(FetchContent)
 
 set(CMAKE_CXX_STANDARD 23)
@@ -72,7 +70,9 @@ file(GLOB_RECURSE ENGINE_SOURCES
         "engine/*.mm"
 )
 add_library(MMotorEngine STATIC ${ENGINE_SOURCES})
-target_include_directories(MMotorEngine PUBLIC engine)
+target_include_directories(MMotorEngine PUBLIC
+        engine
+        ${bgfx_SOURCE_DIR}/bx/include)
 target_link_libraries(MMotorEngine PUBLIC
         SDL3::SDL3
         bgfx
