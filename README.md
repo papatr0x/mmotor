@@ -1,12 +1,22 @@
+# Mini Motor
+
+The idea behind this project is basically to take third-party libraries and create a video game engine with them.
+
+The initially defined features for the engine are:
+- Compile and run on macOS and Windows. (maybe mobile in the near future?)
+- 2D and 3D rendering.
+- Sound.
+- Gamepad, keyboard and mouse support.
+- Use of modern C++.
+
+It should also include a small game demonstrating that the engine works.
+
+This is the basic structure for the engine directory.
 
 ```
 mmotor_project/
 ├── CMakeLists.txt
-├── cmake/
-│   ├── Platforms.cmake
-│   └── Dependencies.cmake
 ├── engine/
-│   src/
 │   ├── core/
 │   │   ├── Engine.hpp / Engine.cpp        # Orquestador principal
 │   │   ├── GameLoop.hpp / GameLoop.cpp    # Fixed timestep loop
@@ -36,8 +46,9 @@ mmotor_project/
 │       ├── Window.hpp
 │       └── PlatformLayer.hpp             # Abstracciones OS-específicas
 └── game/
-├── main.cpp
-├── scenes/
+│   ├── src/
+│   │   └── main.cpp
+│   ├── scenes/
 │   └── GameScene.hpp
 └── assets/
 ```
