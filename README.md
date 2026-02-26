@@ -6,6 +6,7 @@ The initially defined features for the engine are:
 - Compile and run on macOS and Windows. (maybe mobile in the near future?)
 - 2D and 3D rendering.
 - Sound.
+- Basics physics.
 - Gamepad, keyboard and mouse support.
 - Use of modern C++.
 
