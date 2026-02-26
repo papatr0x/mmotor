@@ -1,18 +1,24 @@
 # Mini Motor
 
-The idea behind this project is basically to take third-party libraries and create a video game engine with them.
+This project is a custom video game engine developed as a practical exploration of engine 
+architecture. By integrating established third-party libraries, the goal is to build a robust, 
+feature-rich framework that demonstrates modern software design principles.
 
-The initially defined features for the engine are:
-- Compile and run on macOS and Windows. (maybe mobile in the near future?)
-- 2D and 3D rendering.
-- Sound.
-- Basics physics.
-- Gamepad, keyboard and mouse support.
-- Use of modern C++.
+## Core Features
+* **Cross-Platform:** Compiles and runs natively on macOS and Windows (with mobile support planned for future releases).
+* **Graphics:** Support for both 2D and 3D rendering pipelines.
+* **Audio:** Integrated sound and audio management.
+* **Physics:** Basic physics simulation for movement and collision detection.
+* **Input Handling:** Comprehensive support for gamepads, keyboards, and mice.
+* **Modern C++:** Built utilizing modern C++ standards (C++23) to ensure clean, efficient, and maintainable code.
 
-It should also include a small game demonstrating that the engine works.
+## Demo Project
+To validate the engine's core systems, the repository includes a small, fully playable demo game built entirely on this framework.
 
-This is the basic structure for the engine directory.
+---
+
+## Directory Structure
+The engine's architecture is organized into the following main directories:
 
 ```
 mmotor_project/
