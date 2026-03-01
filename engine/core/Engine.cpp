@@ -1,13 +1,12 @@
-//
 // Created by Patricio Palma on 26-02-26.
-//
+
 #include "Engine.h"
 #include "platform/NativeWindow.h"
 #include <SDL3/SDL.h>
 #include <iostream>
 
 bool Engine::init(const std::string& title, int width, int height) {
-    if (SDL_Init(SDL_INIT_VIDEO | SDL_INIT_GAMEPAD) != true) {
+    if (!SDL_Init(SDL_INIT_VIDEO | SDL_INIT_GAMEPAD)) {
         std::cerr << "SDL_Init failed: " << SDL_GetError() << "\n";
         return false;
     }
@@ -29,20 +28,19 @@ bool Engine::init(const std::string& title, int width, int height) {
     m_input = std::make_unique<InputSystem>();
     m_renderer = std::make_unique<Renderer>();
     m_physics = std::make_unique<PhysicsWorld>();
+    m_registry = std::make_unique<Registry>();
 
-    if (!m_physics->init()) {
+    if (!m_renderer->init(handles.windowHandle, handles.displayHandle, width, height)) {
         return false;
     }
 
-    if (!m_renderer->init(handles.windowHandle, handles.displayHandle, width, height)) {
+    if (!m_physics->init()) {
         return false;
     }
 
     // Show window and raise it to front
     SDL_ShowWindow(m_window);
     SDL_RaiseWindow(m_window);
-
-    // Pump events. Cocoa proceses the window before game loop
     SDL_PumpEvents();
 
     m_initialized = true;
@@ -51,27 +49,39 @@ bool Engine::init(const std::string& title, int width, int height) {
     return true;
 }
 
-void Engine::run(const GameUpdateFn& gameUpdate) {
+void Engine::run(UpdateFn gameUpdate, RenderFn gameRender) {
     if (!m_initialized) return;
 
-    m_loop.run(
-        [this, gameUpdate](float dt) {
-            m_input->update();
+    m_gameUpdate = gameUpdate;
+    m_gameRender = gameRender;
 
-            if (m_input->quitRequested()) {
-                m_loop.stop();
-                return;
-            }
-            if (gameUpdate) {
-                gameUpdate(dt);
-}
-        },
-        [this](float alpha) {
-            m_renderer->beginFrame();
-            // render a game screen
-            m_renderer->endFrame();
-        }
+    SDL_Delay(100);
+
+    m_loop.run(
+        [this](float dt) { engineUpdate(dt); },
+        [this](float alpha) { engineRender(alpha); }
     );
+}
+
+void Engine::engineUpdate(float dt) {
+    // 1. Input
+    m_input->update();
+    if (m_input->quitRequested()) {
+        m_loop.stop();
+        return;
+    }
+
+    // 3. Update del juego
+    if (m_gameUpdate) m_gameUpdate(dt);
+}
+
+void Engine::engineRender(float alpha) {
+    m_renderer->beginFrame();
+
+    // Render del juego
+    if (m_gameRender) m_gameRender(alpha);
+
+    m_renderer->endFrame();
 }
 
 void Engine::shutdown() {

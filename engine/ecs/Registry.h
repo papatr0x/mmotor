@@ -8,7 +8,6 @@
 #include <unordered_map>
 #include <typeindex>
 #include <memory>
-#include <vector>
 #include <cstdint>
 
 using Entity = std::uint32_t;

@@ -20,6 +20,7 @@ public:
     void shutdown();
     void onResize(int width, int height);
 
+    void setCamera(const glm::mat4& view, const glm::mat4& proj);
     void submit(const Mesh& mesh, const ShaderProgram& shader, const Transform& transform);
 
     int width()  const { return m_width; }
@@ -29,6 +30,8 @@ private:
     int  m_width{0};
     int  m_height{0};
     bool m_initialized{false};
+    glm::mat4 m_view{1.0f};
+    glm::mat4 m_proj{1.0f};
 };
 
 #endif //MMOTOR_RENDERER_H
